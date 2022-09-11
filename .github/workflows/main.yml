@@ -42,7 +42,7 @@ jobs:
       - name: Zip build file and deploy sh
         run: |
           mv ./build/libs/shoppingmall-0.0.1-SNAPSHOT.jar ./
-          zip buildFile.zip .scripts/start.sh .scripts/stop.sh ./appspec.yml ./shoppingmall-0.0.1-SNAPSHOT.jar
+          zip buildFile.zip ./scripts/start.sh ./scripts/stop.sh ./appspec.yml ./shoppingmall-0.0.1-SNAPSHOT.jar
 
       - name: AWS configure credentials
         uses: aws-actions/configure-aws-credentials@v1
