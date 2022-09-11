@@ -57,7 +57,7 @@ jobs:
         run: aws deploy push 
           --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} 
           --ignore-hidden-files 
-          --s3-location s3:///${{ env.S3_BUCKET_NAME }}/archive/buildFile.zip 
+          --s3-location s3://${{ env.S3_BUCKET_NAME }}/archive/buildFile.zip 
           --source .
 
       - name: deploy with AWS codeDeploy
