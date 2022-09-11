@@ -37,7 +37,7 @@ jobs:
       - name: Build with Gradle
         run: |
           ./gradlew --version
-          ./gradlew build # 빌드
+          ./gradlew build -x test # 빌드
 
       - name: Zip build file and deploy sh
         run: |
