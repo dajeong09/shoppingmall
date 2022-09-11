@@ -18,15 +18,17 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: production
 
     steps:
+      - name: Checkout
       - uses: actions/checkout@v3
 
       - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: 11
+          java-version: '11'
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -48,12 +50,20 @@ jobs:
           aws-secret-access-key: ${{ secrets.SECRET_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: upload to S3
-        run: aws s3 cp --region ${{ env.AWS_REGION }} ./buildFile.zip s3://${{ env.S3_BUCKET_NAME }}/archive/
+#      - name: upload to S3
+#        run: aws s3 cp --region ${{ env.AWS_REGION }} ./buildFile.zip s3://${{ env.S3_BUCKET_NAME }}/archive/
+
+      - name: Upload to AWS S3
+        run: |
+           aws deploy push \
+             --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+             --ignore-hidden-files \
+             --s3-location s3:///${{ env.S3_BUCKET_NAME }}/archive/buildFile.zip \
+              --source .
 
       - name: deploy with AWS codeDeploy
         run: aws deploy create-deployment
           --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }}
-          --deployment-config-name CodeDeployDefault.OneAtATime
+          --deployment-config-name CodeDeployDefault.AllAtOnce
           --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }}
-          --s3-location bucket=${{ env.S3_BUCKET_NAME }},bundleType=zip,key=archive/buildFile.zip
+          --s3-location bucket=${{ env.S3_BUCKET_NAME }},key=archive/buildFile.zip,bundleType=zip
